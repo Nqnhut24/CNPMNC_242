@@ -1,14 +1,34 @@
-import React from 'react';
- import { Button, Form, Input, Card, Typography } from 'antd';
+import React, {useEffect, useState} from 'react';
+ import { Button, Checkbox, Form, Input, Card, Typography } from 'antd';
  
  const { Title } = Typography;
  
  const App = () => {
-   const [form] = Form.useForm();
- 
-   const onFinish = (values) => {
-     console.log('Success:', values);
-   };
+    const [form] = Form.useForm();
+    const [checkNick, setCheckNick] = useState(false);
+    const formTailLayout = {
+    labelCol: {
+        span: 4,
+    },
+    wrapperCol: {
+        span: 16,
+        offset: 0,
+    },
+    };
+    useEffect(() => {
+    form.validateFields(['nickname']);
+    }, [checkNick, form]);
+    const onCheckboxChange = (e) => {
+    setCheckNick(e.target.checked);
+    };
+    const onCheck = async () => {
+    try {
+        const values = await form.validateFields();
+        console.log('Success:', values);
+    } catch (errorInfo) {
+        console.log('Failed:', errorInfo);
+    }
+    };
  
    return (
      <div style={{
@@ -32,7 +52,7 @@ import React from 'react';
          <Form
            form={form}
            name="register"
-           onFinish={onFinish}
+           
            layout="vertical"
            requiredMark={false}
          >
@@ -41,9 +61,9 @@ import React from 'react';
              label="User Name"
              rules={[
                {
-                 required: true,
-                 message: 'Please input your user name',
-               },
+                    required: checkNick,
+                    message: 'Please input your nickname',
+                },
              ]}
            >
              <Input size="large" placeholder="Enter your user name" />
@@ -64,15 +84,20 @@ import React from 'react';
            >
              <Input.Password size="large" placeholder="Enter your password" />
            </Form.Item>
+           <Form.Item {...formTailLayout}>
+                <Checkbox checked={checkNick} onChange={onCheckboxChange}>
+                 Username is required
+                </Checkbox>
+            </Form.Item>
            <Form.Item>
-             <Button type="primary" htmlType="submit" size="large" block>
-               Login
-             </Button>
+                <Button type="primary" onClick={onCheck}>
+                Login
+                </Button>
            </Form.Item>
          </Form>
        </Card>
      </div>
    );
- };
+};
  
  export default App;
