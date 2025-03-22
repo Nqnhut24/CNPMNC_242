@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react';
- import { Button, Checkbox, Form, Input, Card, Typography } from 'antd';
+import { Button, Checkbox, Form, Input, Card, Typography } from 'antd';
+import { Link } from 'react-router-dom';
  
  const { Title } = Typography;
  
@@ -112,10 +113,15 @@ import React, {useEffect, useState} from 'react';
                 <Input.Password size="large" placeholder="Enter your password" />
             </Form.Item>
             <Form.Item {...formTailLayout}>
-                    <Checkbox checked={checkNick} onChange={onCheckboxChange}>
-                    Username is required
-                    </Checkbox>
-                </Form.Item>
+                <Checkbox checked={checkNick} onChange={onCheckboxChange}>
+                Username is required
+                </Checkbox>
+            </Form.Item>
+            <Form.Item>
+                <p style={{ textAlign: 'center' }}>
+                    Don't have an account? <Link to="/register">Register here</Link>
+                </p>
+            </Form.Item>
             <Form.Item>
                 <Button type="primary" onClick={handleLogin}>
                 Login
