@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import styles from "./style.module.css";
 import { Button, Modal, Space, Table, Tag } from "antd";
+import Layout from "../../layout/layout";
+import styles from "./style.module.css";
 
 function Finance() {
     const columns = [
@@ -21,7 +22,7 @@ function Finance() {
             key: "amount",
         },
         {
-            title: "Reasson",
+            title: "Reason",
             dataIndex: "reason",
             key: "reason",
         },
@@ -54,7 +55,7 @@ function Finance() {
             render: (_, record) => (
                 <>
                     <p
-                        style={{ color: "blue" }}
+                        style={{ color: "blue", cursor: "pointer" }}
                         onClick={() => showModal()}
                     >
                         View
@@ -91,6 +92,7 @@ function Finance() {
             ),
         },
     ];
+
     const data = [
         {
             key: "1",
@@ -103,46 +105,52 @@ function Finance() {
             tags: ["HR"],
         },
         {
-            key: "1",
-            id: "TT0531",
-            name: "Mai Lâm",
-            reason: "Travel",
-            status: "Pending",
-            amount: 4890000,
-            time: "23-02-2025 12:42:12",
-            tags: ["HR"],
+            key: "2",
+            id: "TT0532",
+            name: "Nguyễn Văn A",
+            reason: "Office Supplies",
+            status: "Approved",
+            amount: 1500000,
+            time: "22-02-2025 10:30:00",
+            tags: ["Finance"],
         },
         {
-            key: "1",
-            id: "TT0531",
-            name: "Mai Lâm",
-            reason: "Travel",
-            status: "Pending",
-            time: "23-02-2025 12:42:12",
-            amount: 4890000,
-            tags: ["HR"],
+            key: "3",
+            id: "TT0533",
+            name: "Trần Thị B",
+            reason: "Marketing",
+            status: "Rejected",
+            amount: 2000000,
+            time: "21-02-2025 09:15:00",
+            tags: ["Marketing"],
         },
     ];
+
     const [isModalOpen, setIsModalOpen] = useState(false);
+
     const showModal = () => {
         setIsModalOpen(true);
     };
+
     const handleOk = () => {
         setIsModalOpen(false);
     };
+
     const handleCancel = () => {
         setIsModalOpen(false);
     };
+
     return (
-        <div className={styles.container}>
-            <h1>EXPENSE MANAGEMENT SYSTEM (EMS)</h1>
-            <i>Hi Manager, Let approve expense request!</i>
-            <h3>Expense Request</h3>
-            <Table
-                columns={columns}
-                dataSource={data}
-            />
-        </div>
+        <Layout title="Finance Management">
+            <div className={styles.container}>
+                <i>Hi Manager, Let approve expense requests!</i>
+                <h3>Expense Request</h3>
+                <Table
+                    columns={columns}
+                    dataSource={data}
+                />
+            </div>
+        </Layout>
     );
 }
 
