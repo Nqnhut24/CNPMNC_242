@@ -1,9 +1,8 @@
 import React, { useState } from "react";
-import { Button, Modal, Space, Table, Tag } from "antd";
-import Layout from "../../layout/layout";
 import styles from "./style.module.css";
+import { Button, Modal, Space, Table, Tag } from "antd";
 
-function Finance() {
+function RequestHistory() {
     const columns = [
         {
             title: "Employee ID",
@@ -22,7 +21,7 @@ function Finance() {
             key: "amount",
         },
         {
-            title: "Reason",
+            title: "Reasson",
             dataIndex: "reason",
             key: "reason",
         },
@@ -55,7 +54,7 @@ function Finance() {
             render: (_, record) => (
                 <>
                     <p
-                        style={{ color: "blue", cursor: "pointer" }}
+                        style={{ color: "blue" }}
                         onClick={() => showModal()}
                     >
                         View
@@ -92,7 +91,6 @@ function Finance() {
             ),
         },
     ];
-
     const data = [
         {
             key: "1",
@@ -105,53 +103,47 @@ function Finance() {
             tags: ["HR"],
         },
         {
-            key: "2",
-            id: "TT0532",
-            name: "Nguyễn Văn A",
-            reason: "Office Supplies",
-            status: "Approved",
-            amount: 1500000,
-            time: "22-02-2025 10:30:00",
-            tags: ["Finance"],
+            key: "1",
+            id: "TT0531",
+            name: "Mai Lâm",
+            reason: "Travel",
+            status: "Pending",
+            amount: 4890000,
+            time: "23-02-2025 12:42:12",
+            tags: ["HR"],
         },
         {
-            key: "3",
-            id: "TT0533",
-            name: "Trần Thị B",
-            reason: "Marketing",
-            status: "Rejected",
-            amount: 2000000,
-            time: "21-02-2025 09:15:00",
-            tags: ["Marketing"],
+            key: "1",
+            id: "TT0531",
+            name: "Mai Lâm",
+            reason: "Travel",
+            status: "Pending",
+            time: "23-02-2025 12:42:12",
+            amount: 4890000,
+            tags: ["HR"],
         },
     ];
-
     const [isModalOpen, setIsModalOpen] = useState(false);
-
     const showModal = () => {
         setIsModalOpen(true);
     };
-
     const handleOk = () => {
         setIsModalOpen(false);
     };
-
     const handleCancel = () => {
         setIsModalOpen(false);
     };
-
     return (
-        <Layout title="Finance Management">
-            <div className={styles.container}>
-                <i>Hi Manager, Let approve expense requests!</i>
-                <h3>Expense Request</h3>
-                <Table
-                    columns={columns}
-                    dataSource={data}
-                />
-            </div>
-        </Layout>
+        <div className={styles.container}>
+            <h1>EXPENSE MANAGEMENT SYSTEM (EMS)</h1>
+            <i>Hi Finance Department, Let approve expense request!</i>
+            <h3>Expense Request</h3>
+            <Table
+                columns={columns}
+                dataSource={data}
+            />
+        </div>
     );
 }
 
-export default Finance;
+export default RequestHistory;

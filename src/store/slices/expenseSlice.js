@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import * as api from "../../api/index";
-export const fetchUsers = createAsyncThunk("expense/send", async (params, { rejectWithValue }) => {
+export const sendRequest = createAsyncThunk("expense/send", async (params, { rejectWithValue }) => {
     try {
         const response = await api.sendRequest(params);
         return response.data; // This will be the `fulfilled` payload
@@ -16,13 +16,6 @@ const counterSlice = createSlice({
             employeeId: null,
             amount: 0,
             description: null,
-        },
-        tripInfo: {
-            startDate: null,
-            endDate: null,
-            place: null,
-            reason: null,
-            members: [],
         },
     },
     reducers: {

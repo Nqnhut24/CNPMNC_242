@@ -44,6 +44,10 @@ const App = () => {
                 required: true,
                 message: 'Please input your full name',
               },
+              {
+                pattern: /^[a-zA-ZÀ-ỹ\s]*$/,
+                message: 'Name can only contain letters and spaces',
+              }
             ]}
           >
             <Input size="large" placeholder="Enter your full name" />
@@ -67,6 +71,23 @@ const App = () => {
           </Form.Item>
 
           <Form.Item
+            name="username"
+            label="Username"
+            rules={[
+              {
+                required: true,
+                message: 'Please input your username',
+              },
+              {
+                pattern: /^[a-zA-Z_][a-zA-Z0-9_]*$/,
+                message: 'Username must start with a letter or underscore and can only contain letters, numbers, and underscores',
+              }
+            ]}
+          >
+            <Input size="large" placeholder="Enter your username" />
+          </Form.Item>
+
+          <Form.Item
             name="password"
             label="Password"
             rules={[
@@ -78,6 +99,10 @@ const App = () => {
                 min: 6,
                 message: 'Password must be at least 6 characters',
               },
+              {
+                pattern: /^\S*$/,
+                message: 'Password cannot contain spaces',
+              }
             ]}
           >
             <Input.Password size="large" placeholder="Enter your password" />
@@ -110,6 +135,12 @@ const App = () => {
               Register
             </Button>
           </Form.Item>
+          
+          <div style={{ textAlign: 'center' }}>
+            <Typography.Text>
+              Do you have an account? <Typography.Link href="/login">Login</Typography.Link>
+            </Typography.Text>
+          </div>
         </Form>
       </Card>
     </div>

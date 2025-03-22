@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-d
 import Employee from "./pages/Employee";
 import Manager from "./pages/Manager";
 import Finance from "./pages/Manager";
+import RequestHistory from "./pages/RequestHistory";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
 
@@ -12,6 +13,11 @@ function App() {
         <div className="App">
             <Router>
                 <Routes>
+                    <Route
+                        path="/history"
+                        element={<Manager />}
+                    />
+
                     <Route
                         path="/login"
                         element={<Login />}
@@ -22,7 +28,7 @@ function App() {
                     />
                     <Route
                         path="/manager"
-                        element={<Manager />}
+                        element={<RequestHistory />}
                     />
                     <Route
                         path="/finance"
