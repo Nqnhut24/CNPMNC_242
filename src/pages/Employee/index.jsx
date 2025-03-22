@@ -48,12 +48,7 @@ const ExpenseForm = () => {
                 className={styles.form}
             >
                 <h3>Submit Expense Request</h3>
-                <input
-                    type="text"
-                    name="employeeName"
-                    placeholder="Employee Name"
-                    onChange={handleChange}
-                />
+
                 <input
                     type="number"
                     name="amount"
@@ -94,49 +89,6 @@ const ExpenseForm = () => {
                     onChange={handleChange}
                 ></textarea>
 
-                <h3>Trip Members</h3>
-
-                {formData.members.map((member, index) => (
-                    <div
-                        key={index}
-                        className={styles.memberSection}
-                    >
-                        <input
-                            type="text"
-                            placeholder="Name"
-                            value={member.name}
-                            onChange={(e) => handleChange(e, index, "name")}
-                        />
-                        <select
-                            value={member.department}
-                            onChange={(e) => handleChange(e, index, "department")}
-                        >
-                            <option value="">Select Department</option>
-                            {departments.map((dept, i) => (
-                                <option
-                                    key={i}
-                                    value={dept}
-                                >
-                                    {dept}
-                                </option>
-                            ))}
-                        </select>
-                        <input
-                            type="text"
-                            placeholder="ID"
-                            value={member.id}
-                            onChange={(e) => handleChange(e, index, "id")}
-                        />
-                    </div>
-                ))}
-
-                <button
-                    type="button"
-                    className={styles.addButton}
-                    onClick={addMember}
-                >
-                    + Add Member
-                </button>
                 <button
                     type="submit"
                     className={styles.submitButton}
