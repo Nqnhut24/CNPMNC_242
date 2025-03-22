@@ -5,6 +5,8 @@ import Employee from "./pages/Employee";
 import Manager from "./pages/Manager";
 import Finance from "./pages/Manager";
 import RequestHistory from "./pages/RequestHistory";
+import Register from "./pages/Register";
+import Login from "./pages/Login";
 
 function App() {
     return (
@@ -14,6 +16,11 @@ function App() {
                     <Route
                         path="/history"
                         element={<Manager />}
+                    />
+
+                    <Route
+                        path="/login"
+                        element={<Login />}
                     />
                     <Route
                         path="/request"
@@ -26,6 +33,10 @@ function App() {
                     <Route
                         path="/finance"
                         element={<Finance />}
+                    />
+                    <Route
+                        path="/register"
+                        element={<Register />}
                     />
                 </Routes>
             </Router>
