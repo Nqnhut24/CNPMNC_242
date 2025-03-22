@@ -4,12 +4,17 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-d
 import Employee from "./pages/Employee";
 import Manager from "./pages/Manager";
 import Finance from "./pages/Manager";
+import Login from "./pages/Login";
 
 function App() {
     return (
         <div className="App">
             <Router>
                 <Routes>
+                    <Route
+                        path="/login"
+                        element={<Login />}
+                    />
                     <Route
                         path="/request"
                         element={<Employee />}
@@ -22,6 +27,7 @@ function App() {
                         path="/finance"
                         element={<Finance />}
                     />
+                    
                 </Routes>
             </Router>
         </div>
