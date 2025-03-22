@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-d
 import Employee from "./pages/Employee";
 import Manager from "./pages/Manager";
 import Finance from "./pages/Manager";
+import RequestHistory from "./pages/RequestHistory";
 
 function App() {
     return (
@@ -11,12 +12,16 @@ function App() {
             <Router>
                 <Routes>
                     <Route
+                        path="/history"
+                        element={<Manager />}
+                    />
+                    <Route
                         path="/request"
                         element={<Employee />}
                     />
                     <Route
                         path="/manager"
-                        element={<Manager />}
+                        element={<RequestHistory />}
                     />
                     <Route
                         path="/finance"

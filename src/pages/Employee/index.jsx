@@ -1,43 +1,37 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./style.module.css";
+import { useDispatch } from "react-redux";
+import { sendRequest } from "../../store/slices/expenseSlice";
 
 const ExpenseForm = () => {
-    const departments = ["HR", "IT", "Finance", "Marketing", "Operations", "Sales", "Engineering"];
-
+    const expenseType = ["Office Rent", "Salary", "Office Supplies", "Marketing", "Meeting"];
+    const dispatch = useDispatch();
     const [formData, setFormData] = useState({
-        employeeName: "",
-        amount: "",
-        reason: "",
-        calendar: "",
-        tripPlace: "",
-        startTime: "",
-        endTime: "",
-        tripReason: "",
-        numMembers: "",
-        members: [{ name: "", department: "", id: "" }],
+        expense: "",
+        expenseType: "",
+        description: "",
+        statusEnum: "PENDING",
+        employeeEmail: "tien@gmail.com",
     });
 
-    const handleChange = (e, index = null, field = null) => {
-        if (index !== null && field) {
-            const updatedMembers = [...formData.members];
-            updatedMembers[index][field] = e.target.value;
-            setFormData({ ...formData, members: updatedMembers });
-        } else {
-            setFormData({ ...formData, [e.target.name]: e.target.value });
-        }
-    };
-
-    const addMember = () => {
-        setFormData({
-            ...formData,
-            members: [...formData.members, { name: "", department: "", id: "" }],
-        });
+    const handleChange = (e) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        alert("Request sent successfully!");
+
+        if (!formData.expenseType || !formData.expense || !formData.description) {
+            alert("Please fill in all fields!");
+            return;
+        }
+
+        dispatch(sendRequest({ ...formData, expense: Number(formData.expense) }));
     };
+
+    useEffect(() => {
+        console.log("FORM DATA: ", formData);
+    }, [formData]);
 
     return (
         <div className={styles.container}>
@@ -47,45 +41,34 @@ const ExpenseForm = () => {
                 onSubmit={handleSubmit}
                 className={styles.form}
             >
-                <h3>Submit Expense Request</h3>
+                <h3>Expense Request Form</h3>
 
+                <select
+                    value={formData.expenseType}
+                    onChange={handleChange}
+                    name="expenseType"
+                >
+                    <option value="">Select Expense Type</option>
+                    {expenseType.map((dept, i) => (
+                        <option
+                            key={i}
+                            value={dept}
+                        >
+                            {dept}
+                        </option>
+                    ))}
+                </select>
                 <input
                     type="number"
-                    name="amount"
+                    name="expense"
                     placeholder="Amount"
+                    value={formData.amount}
                     onChange={handleChange}
                 />
                 <textarea
-                    name="reason"
+                    name="description"
+                    value={formData.description}
                     placeholder="Reason for expense"
-                    onChange={handleChange}
-                ></textarea>
-
-                <h3>Business Trip Plan</h3>
-                <input
-                    type="date"
-                    name="calendar"
-                    onChange={handleChange}
-                />
-                <input
-                    type="text"
-                    name="tripPlace"
-                    placeholder="Trip Place"
-                    onChange={handleChange}
-                />
-                <input
-                    type="datetime-local"
-                    name="startTime"
-                    onChange={handleChange}
-                />
-                <input
-                    type="datetime-local"
-                    name="endTime"
-                    onChange={handleChange}
-                />
-                <textarea
-                    name="tripReason"
-                    placeholder="Reason for the business trip"
                     onChange={handleChange}
                 ></textarea>
 

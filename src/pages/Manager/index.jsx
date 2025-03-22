@@ -1,19 +1,13 @@
-import React, { useState } from "react";
+import { Button, Space, Table, Tag } from "antd";
+import React from "react";
 import styles from "./style.module.css";
-import { Button, Modal, Space, Table, Tag } from "antd";
 
-function Finance() {
+function Manager() {
     const columns = [
         {
-            title: "Employee ID",
-            dataIndex: "id",
-            key: "id",
-            render: (text) => <a>{text}</a>,
-        },
-        {
-            title: "Họ tên",
-            dataIndex: "name",
-            key: "name",
+            title: "STT",
+            dataIndex: "stt",
+            key: "stt",
         },
         {
             title: "Amount",
@@ -21,14 +15,14 @@ function Finance() {
             key: "amount",
         },
         {
-            title: "Reasson",
-            dataIndex: "reason",
-            key: "reason",
+            title: "Description",
+            dataIndex: "description",
+            key: "description",
         },
         {
-            title: "Department",
-            key: "department",
-            dataIndex: "department",
+            title: "Expense Type",
+            key: "expenseType",
+            dataIndex: "expenseType",
             render: (_, { tags }) => (
                 <>
                     {tags.map((tag) => {
@@ -48,28 +42,7 @@ function Finance() {
                 </>
             ),
         },
-        {
-            title: "Member",
-            key: "member",
-            render: (_, record) => (
-                <>
-                    <p
-                        style={{ color: "blue" }}
-                        onClick={() => showModal()}
-                    >
-                        View
-                    </p>
-                    <Modal
-                        title="Trip's members"
-                        open={isModalOpen}
-                        onOk={handleOk}
-                        onCancel={handleCancel}
-                    >
-                        2212481 - Nguyễn Quốc Nhựt (IT)
-                    </Modal>
-                </>
-            ),
-        },
+
         {
             title: "Status",
             dataIndex: "status",
@@ -85,8 +58,8 @@ function Finance() {
             key: "action",
             render: (_, record) => (
                 <Space size="middle">
-                    <Button type="primary">Accept</Button>
-                    <Button danger>Reject</Button>
+                    <Button type="primary">Update</Button>
+                    <Button danger>Delete</Button>
                 </Space>
             ),
         },
@@ -94,49 +67,19 @@ function Finance() {
     const data = [
         {
             key: "1",
-            id: "TT0531",
-            name: "Mai Lâm",
-            reason: "Travel",
+            stt: 1,
+            description: "All cost for IT Department's Team building in Nha Trang",
             status: "Pending",
             amount: 4890000,
             time: "23-02-2025 12:42:12",
-            tags: ["HR"],
-        },
-        {
-            key: "1",
-            id: "TT0531",
-            name: "Mai Lâm",
-            reason: "Travel",
-            status: "Pending",
-            amount: 4890000,
-            time: "23-02-2025 12:42:12",
-            tags: ["HR"],
-        },
-        {
-            key: "1",
-            id: "TT0531",
-            name: "Mai Lâm",
-            reason: "Travel",
-            status: "Pending",
-            time: "23-02-2025 12:42:12",
-            amount: 4890000,
-            tags: ["HR"],
+            tags: ["Travel"],
         },
     ];
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const showModal = () => {
-        setIsModalOpen(true);
-    };
-    const handleOk = () => {
-        setIsModalOpen(false);
-    };
-    const handleCancel = () => {
-        setIsModalOpen(false);
-    };
+
     return (
         <div className={styles.container}>
             <h1>EXPENSE MANAGEMENT SYSTEM (EMS)</h1>
-            <i>Hi Finance Department, Let approve expense request!</i>
+            <i>Hi Axon Active, Let explore your request!</i>
             <h3>Expense Request</h3>
             <Table
                 columns={columns}
@@ -146,4 +89,4 @@ function Finance() {
     );
 }
 
-export default Finance;
+export default Manager;

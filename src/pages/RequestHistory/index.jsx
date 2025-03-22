@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import styles from "./style.module.css";
 import { Button, Modal, Space, Table, Tag } from "antd";
 
-function Finance() {
+function RequestHistory() {
     const columns = [
         {
             title: "Employee ID",
@@ -136,7 +136,7 @@ function Finance() {
     return (
         <div className={styles.container}>
             <h1>EXPENSE MANAGEMENT SYSTEM (EMS)</h1>
-            <i>Hi Manager, Let approve expense request!</i>
+            <i>Hi Finance Department, Let approve expense request!</i>
             <h3>Expense Request</h3>
             <Table
                 columns={columns}
@@ -146,4 +146,4 @@ function Finance() {
     );
 }
 
-export default Finance;
+export default RequestHistory;

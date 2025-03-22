@@ -10,7 +10,7 @@ const API = axios.create({
 
 export const sendRequest = async (params) => {
     try {
-        const response = API.post("/request", params);
+        const response = API.post("/api/v1/requests", params);
         return (await response).data;
     } catch (err) {
         console.error(err);
