@@ -45,8 +45,8 @@ const App = () => {
                 message: 'Please input your full name',
               },
               {
-                pattern: /^[a-zA-ZÀ-ỹ\s]*$/,
-                message: 'Name can only contain letters and spaces',
+                pattern: /^[a-zA-ZÀ-ỹ\s]*[a-zA-ZÀ-ỹ]+[a-zA-ZÀ-ỹ\s]*$/,
+                message: 'Name must contain at least one letter and can only contain letters and spaces',
               }
             ]}
           >
