@@ -1,6 +1,7 @@
 import { Button, Space, Table, Tag } from "antd";
 import React from "react";
 import styles from "./style.module.css";
+import Layout from "../../layout/layout";
 
 function Manager() {
     const columns = [
@@ -77,6 +78,7 @@ function Manager() {
     ];
 
     return (
+        <Layout title="Manager">
         <div className={styles.container}>
             <h1>EXPENSE MANAGEMENT SYSTEM (EMS)</h1>
             <i>Hi Axon Active, Let explore your request!</i>
@@ -86,6 +88,7 @@ function Manager() {
                 dataSource={data}
             />
         </div>
+        </Layout>
     );
 }
 

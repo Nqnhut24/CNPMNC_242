@@ -6,11 +6,64 @@ import { useDispatch } from "react-redux";
 import { sendRequest } from "../../store/slices/expenseSlice";
 import { Button, notification } from "antd";
 import { Navigate, useNavigate } from "react-router-dom";
+import Layout from "../../layout/layout";
 
 const ExpenseForm = () => {
     const navigate = useNavigate();
     const expenseType = ["Office Rent", "Salary", "Office Supplies", "Marketing", "Meeting"];
     const [api, contextHolder] = notification.useNotification();
+    const dispatch = useDispatch();
+    
+    // Initialize form data with user email from localStorage
+    const [formData, setFormData] = useState({
+        expense: "",
+        expenseType: "",
+        description: "",
+        statusEnum: "PENDING",
+        employeeEmail: localStorage.getItem('userEmail') || "",
+    });
+
+    useEffect(() => {
+        // Check if user is logged in
+        const token = localStorage.getItem('token');
+        const userEmail = localStorage.getItem('userEmail');
+        if (!token || !userEmail) {
+            navigate('/login');
+        }
+    }, [navigate]);
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        if (!formData.expenseType || !formData.expense || !formData.description) {
+            notification.error({
+                message: 'Validation Error',
+                description: 'Please fill in all fields!'
+            });
+            return;
+        }
+
+        try {
+            await dispatch(sendRequest({ ...formData, expense: Number(formData.expense) })).unwrap();
+            notification.success({
+                message: 'Success',
+                description: 'Request submitted successfully!'
+            });
+            // Reset form after successful submission
+            setFormData({
+                ...formData,
+                expense: "",
+                expenseType: "",
+                description: "",
+            });
+        } catch (error) {
+            notification.error({
+                message: 'Error',
+                description: error.message || 'Failed to submit request'
+            });
+        }
+    };
+
     const openNotification = () => {
         api.open({
             message: "Notification Title",
@@ -25,28 +78,9 @@ const ExpenseForm = () => {
             ),
         });
     };
-    const dispatch = useDispatch();
-    const [formData, setFormData] = useState({
-        expense: "",
-        expenseType: "",
-        description: "",
-        statusEnum: "PENDING",
-        employeeEmail: "tien@gmail.com",
-    });
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
-    };
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-
-        if (!formData.expenseType || !formData.expense || !formData.description) {
-            alert("Please fill in all fields!");
-            return;
-        }
-
-        dispatch(sendRequest({ ...formData, expense: Number(formData.expense) }));
     };
 
     const handleLogout = () => {
@@ -59,6 +93,7 @@ const ExpenseForm = () => {
     }, [formData]);
 
     return (
+        <Layout title="Expense Management System">
         <div className={styles.container}>
             {contextHolder}
             <Button
@@ -68,9 +103,7 @@ const ExpenseForm = () => {
                 Open the notification box
             </Button>
             <h2>EXPENSE MANAGEMENT SYSTEM (EMS)</h2>
-            <i>Hi, employee!</i>
-
-            <h3>Expense Request Form</h3>
+            
 
             <i>Hi, employee!</i>
             <form
@@ -116,6 +149,7 @@ const ExpenseForm = () => {
                 </button>
             </form>
         </div>
+        </Layout>
     );
 };
 

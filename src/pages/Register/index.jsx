@@ -1,13 +1,39 @@
 import React from 'react';
-import { Button, Form, Input, Card, Typography } from 'antd';
+import { Button, Form, Input, Card, Typography, notification } from 'antd';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const { Title } = Typography;
 
 const App = () => {
   const [form] = Form.useForm();
+  const navigate = useNavigate();
 
-  const onFinish = (values) => {
-    console.log('Success:', values);
+  const onFinish = async (values) => {
+    try {
+      const registrationData = {
+        name: values.name,
+        email: values.email,
+        username: values.username,
+        password: values.password,
+        role: "EMPLOYEE" // Default role
+      };
+
+      const response = await axios.post('http://localhost:8080/api/v1/auth/register', registrationData);
+
+      if (response.status === 200 || response.status === 201) {
+        notification.success({
+          message: 'Registration Successful',
+          description: 'Your account has been created successfully!',
+        });
+        navigate('/login');
+      }
+    } catch (error) {
+      notification.error({
+        message: 'Registration Failed',
+        description: error.response?.data?.message || 'Something went wrong during registration.',
+      });
+    }
   };
 
   return (

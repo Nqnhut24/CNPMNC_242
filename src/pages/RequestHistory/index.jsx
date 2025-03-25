@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import styles from "./style.module.css";
 import { Button, Modal, Space, Table, Tag } from "antd";
+import Layout from "../../layout/layout";
 
 function RequestHistory() {
     const columns = [
@@ -134,6 +135,7 @@ function RequestHistory() {
         setIsModalOpen(false);
     };
     return (
+        <Layout title="Finance">
         <div className={styles.container}>
             <h1>EXPENSE MANAGEMENT SYSTEM (EMS)</h1>
             <i>Hi Finance Department, Let approve expense request!</i>
@@ -143,6 +145,7 @@ function RequestHistory() {
                 dataSource={data}
             />
         </div>
+        </Layout>
     );
 }
 
