@@ -1,9 +1,36 @@
-import { Button, Space, Table, Tag } from "antd";
-import React from "react";
+import { Button, Space, Table, Tag, notification } from "antd";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import styles from "./style.module.css";
 import Layout from "../../layout/layout";
 
 function Manager() {
+    const navigate = useNavigate();
+    const [userName, setUserName] = useState('');
+
+    useEffect(() => {
+        // Check auth and role
+        const token = localStorage.getItem('token');
+        const userRole = localStorage.getItem('userRole');
+        const storedUserName = localStorage.getItem('userName');
+
+        if (!token) {
+            navigate('/login');
+            return;
+        }
+
+        if (userRole !== 'EMPLOYEE') {
+            notification.error({
+                message: 'Access Denied',
+                description: 'Only employees can access this page'
+            });
+            navigate('/login');
+            return;
+        }
+
+        setUserName(storedUserName || 'Employee');
+    }, [navigate]);
+
     const columns = [
         {
             title: "STT",
@@ -79,15 +106,15 @@ function Manager() {
 
     return (
         <Layout title="Manager">
-        <div className={styles.container}>
-            <h1>EXPENSE MANAGEMENT SYSTEM (EMS)</h1>
-            <i>Hi Axon Active, Let explore your request!</i>
-            <h3>Expense Request</h3>
-            <Table
-                columns={columns}
-                dataSource={data}
-            />
-        </div>
+            <div className={styles.container}>
+                <h1>EXPENSE MANAGEMENT SYSTEM (EMS)</h1>
+                <i>Hi {userName}, Let explore your request!</i>
+                <h3>Expense Request</h3>
+                <Table
+                    columns={columns}
+                    dataSource={data}
+                />
+            </div>
         </Layout>
     );
 }

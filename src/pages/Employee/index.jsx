@@ -14,13 +14,12 @@ const ExpenseForm = () => {
     const [api, contextHolder] = notification.useNotification();
     const dispatch = useDispatch();
     
-    // Initialize form data with user email from localStorage
+    // Initialize form data without email since it's handled by token
     const [formData, setFormData] = useState({
         expense: "",
         expenseType: "",
         description: "",
-        statusEnum: "PENDING",
-        employeeEmail: localStorage.getItem('userEmail') || "",
+        statusEnum: "PENDING"
     });
 
     useEffect(() => {
@@ -34,6 +33,7 @@ const ExpenseForm = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        const userEmail = localStorage.getItem('userEmail');
 
         if (!formData.expenseType || !formData.expense || !formData.description) {
             notification.error({
@@ -44,17 +44,22 @@ const ExpenseForm = () => {
         }
 
         try {
-            await dispatch(sendRequest({ ...formData, expense: Number(formData.expense) })).unwrap();
+            await dispatch(sendRequest({ 
+                ...formData,
+                expense: Number(formData.expense),
+                employeeEmail: userEmail // Add email to request
+            })).unwrap();
+            
             notification.success({
                 message: 'Success',
                 description: 'Request submitted successfully!'
             });
             // Reset form after successful submission
             setFormData({
-                ...formData,
                 expense: "",
                 expenseType: "",
                 description: "",
+                statusEnum: "PENDING"
             });
         } catch (error) {
             notification.error({

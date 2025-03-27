@@ -7,37 +7,31 @@ import Finance from "./pages/Manager";
 import RequestHistory from "./pages/RequestHistory";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
+import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
     return (
         <div className="App">
             <Router>
                 <Routes>
-                    <Route
-                        path="/history"
-                        element={<Manager />}
-                    />
-
-                    <Route
-                        path="/login"
-                        element={<Login />}
-                    />
-                    <Route
-                        path="/request"
-                        element={<Employee />}
-                    />
-                    <Route
-                        path="/manager"
-                        element={<RequestHistory />}
-                    />
-                    <Route
-                        path="/finance"
-                        element={<Finance />}
-                    />
-                    <Route
-                        path="/register"
-                        element={<Register />}
-                    />
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/register" element={<Register />} />
+                    
+                    {/* Protected Routes */}
+                    <Route path="/request" element={
+                        <ProtectedRoute allowedRole="EMPLOYEE">
+                            <Employee />
+                        </ProtectedRoute>
+                    } />
+                    <Route path="/history" element={
+                        <ProtectedRoute allowedRole="EMPLOYEE">
+                            <Manager />
+                        </ProtectedRoute>
+                    } />
+                    
+                    {/* Other routes */}
+                    <Route path="/finance" element={<Finance />} />
+                    <Route path="*" element={<Navigate to="/login" />} />
                 </Routes>
             </Router>
         </div>
