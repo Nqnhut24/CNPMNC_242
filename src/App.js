@@ -3,7 +3,7 @@ import "./App.css";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import Employee from "./pages/Employee";
 import Manager from "./pages/Manager";
-import Finance from "./pages/Manager";
+import Finance from "./pages/Finance"; // Make sure this import is correct
 import RequestHistory from "./pages/RequestHistory";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
@@ -14,10 +14,11 @@ function App() {
         <div className="App">
             <Router>
                 <Routes>
+                    {/* Public Routes */}
                     <Route path="/login" element={<Login />} />
                     <Route path="/register" element={<Register />} />
                     
-                    {/* Protected Routes */}
+                    {/* Employee Routes */}
                     <Route path="/request" element={
                         <ProtectedRoute allowedRole="EMPLOYEE">
                             <Employee />
@@ -29,8 +30,14 @@ function App() {
                         </ProtectedRoute>
                     } />
                     
-                    {/* Other routes */}
-                    <Route path="/finance" element={<RequestHistory />} />
+                    {/* Finance Manager Routes */}
+                    <Route path="/finance" element={
+                        <ProtectedRoute allowedRole="FINANCE_MANAGER">
+                            <RequestHistory />
+                        </ProtectedRoute>
+                    } />
+                    
+                    {/* Redirect all unknown routes to login */}
                     <Route path="*" element={<Navigate to="/login" />} />
                 </Routes>
             </Router>

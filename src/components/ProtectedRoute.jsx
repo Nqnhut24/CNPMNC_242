@@ -7,15 +7,27 @@ const ProtectedRoute = ({ children, allowedRole }) => {
     const userRole = localStorage.getItem('userRole');
 
     if (!token) {
+        notification.error({
+            message: 'Authentication Required',
+            description: 'Please login to access this page'
+        });
         return <Navigate to="/login" />;
     }
 
     if (userRole !== allowedRole) {
         notification.error({
             message: 'Access Denied',
-            description: `This page is only accessible to ${allowedRole}s`
+            description: `This page is only accessible to ${allowedRole} role`
         });
-        return <Navigate to="/login" />;
+        
+        // Redirect based on user's role
+        if (userRole === 'EMPLOYEE') {
+            return <Navigate to="/request" />;
+        } else if (userRole === 'FINANCE_MANAGER') {
+            return <Navigate to="/finance" />;
+        } else {
+            return <Navigate to="/login" />;
+        }
     }
 
     return children;

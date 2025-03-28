@@ -1,4 +1,4 @@
-import { Button, Space, Table, Tag, notification } from "antd";
+import { Button, Space, Table, Tag, notification, Modal, Input, Select } from "antd";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./style.module.css";
@@ -10,18 +10,19 @@ function Manager() {
     const [userName, setUserName] = useState('');
     const [requests, setRequests] = useState([]);
     const [loading, setLoading] = useState(false);
-    // Add pagination state
     const [pagination, setPagination] = useState({
         current: 1,
         pageSize: 10,
         total: 0
     });
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [editingRequest, setEditingRequest] = useState(null);
+    const expenseType = ["Office Rent", "Salary", "Office Supplies", "Marketing", "Meeting"];
 
     const fetchRequests = async (page = 1, pageSize = 10) => {
         try {
             setLoading(true);
             const token = localStorage.getItem('token');
-            // Updated URL with correct query parameter names
             const response = await axios.get(`http://localhost:8080/api/v1/requests/employee?currentPage=${page}&pageSize=${pageSize}&sortBy=id&ascending=true`, {
                 headers: {
                     'Content-Type': 'application/json',
@@ -42,8 +43,6 @@ function Manager() {
                     name: item.name || 'N/A'
                 }));
                 setRequests(formattedData);
-                
-                // Update pagination state
                 setPagination({
                     current: response.data.currentPage,
                     pageSize: response.data.pageSize,
@@ -80,8 +79,116 @@ function Manager() {
         }
 
         setUserName(storedUserName || 'Employee');
-        fetchRequests(); // Fetch requests when component mounts
+        fetchRequests();
     }, [navigate]);
+
+    const handleUpdate = async (values) => {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await axios.put(`http://localhost:8080/api/v1/requests`, {
+                ...editingRequest,
+                name: values.name,
+                expense: Number(values.expense),
+                expenseType: values.expenseType,
+                description: values.description,
+            }, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            if (response.data.isSuccess) {
+                notification.success({
+                    message: 'Success',
+                    description: 'Request updated successfully!'
+                });
+                setIsModalOpen(false);
+                fetchRequests(pagination.current, pagination.pageSize);
+            }
+        } catch (error) {
+            notification.error({
+                message: 'Error',
+                description: error.response?.data?.message || 'Failed to update request'
+            });
+        }
+    };
+
+    const UpdateModal = () => {
+        const [form, setForm] = useState({
+            name: editingRequest?.name || '',
+            expense: editingRequest?.amount || '',
+            expenseType: editingRequest?.expenseType || '',
+            description: editingRequest?.description || ''
+        });
+
+        const handleChange = (e) => {
+            const { name, value } = e.target;
+            setForm(prev => ({
+                ...prev,
+                [name]: value
+            }));
+        };
+
+        const handleSelectChange = (value) => {
+            setForm(prev => ({
+                ...prev,
+                expenseType: value
+            }));
+        };
+
+        return (
+            <Modal
+                title="Update Expense Request"
+                open={isModalOpen}
+                onOk={() => handleUpdate(form)}
+                onCancel={() => setIsModalOpen(false)}
+                width={600}
+            >
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                    <Input
+                        name="name"
+                        placeholder="Request Name"
+                        value={form.name}
+                        onChange={handleChange}
+                    />
+
+                    <Select
+                        value={form.expenseType}
+                        onChange={handleSelectChange}
+                        placeholder="Select Expense Type"
+                        style={{ width: '100%' }}
+                    >
+                        {expenseType.map((type) => (
+                            <Select.Option key={type} value={type}>
+                                {type}
+                            </Select.Option>
+                        ))}
+                    </Select>
+
+                    <Input
+                        type="number"
+                        name="expense"
+                        placeholder="Amount"
+                        value={form.expense}
+                        onChange={handleChange}
+                    />
+
+                    <Input.TextArea
+                        name="description"
+                        value={form.description}
+                        placeholder="Reason for expense"
+                        onChange={handleChange}
+                        rows={4}
+                    />
+                </div>
+            </Modal>
+        );
+    };
+
+    const handleTableChange = (newPagination, filters, sorter) => {
+        fetchRequests(newPagination.current, newPagination.pageSize);
+    };
 
     const columns = [
         {
@@ -146,23 +253,37 @@ function Manager() {
             key: "action",
             render: (_, record) => (
                 <Space size="middle">
-                    <Button type="primary">Update</Button>
+                    <Button 
+                        type="primary" 
+                        onClick={() => {
+                            setEditingRequest(record);
+                            setIsModalOpen(true);
+                        }}
+                    >
+                        Update
+                    </Button>
                     <Button danger>Delete</Button>
                 </Space>
             ),
         },
     ];
 
-    // Add handler for table pagination
-    const handleTableChange = (newPagination, filters, sorter) => {
-        fetchRequests(newPagination.current, newPagination.pageSize);
-    };
-
     return (
         <Layout title="Request History">
             <div className={styles.container}>
-                <h1>EXPENSE MANAGEMENT SYSTEM (EMS)</h1>
-                <i>Hi {userName}, here are your requests!</i>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+                    <div>
+                        <h1>EXPENSE MANAGEMENT SYSTEM (EMS)</h1>
+                        <i>Hi {userName}, here are your requests!</i>
+                    </div>
+                    <Button 
+                        type="primary"
+                        onClick={() => navigate('/request')}
+                        size="large"
+                    >
+                        Send your request
+                    </Button>
+                </div>
                 <h3>Expense Request History</h3>
                 <Table
                     columns={columns}
@@ -176,6 +297,7 @@ function Manager() {
                     }}
                     onChange={handleTableChange}
                 />
+                <UpdateModal />
             </div>
         </Layout>
     );

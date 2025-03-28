@@ -33,18 +33,32 @@ const App = () => {
 
             const response = await axios.post('http://localhost:8080/api/v1/auth/login', loginData);
 
-            if (response.status === 200 || response.status === 201) {
-                // Updated to match the actual response structure
+            if (response.status === 201) {
+                // Get user data from the correct path in response
+                const userData = response.data.data.user;
+                
+                // Store user data in localStorage with correct paths
                 localStorage.setItem('token', response.data.data.accessToken);
-                localStorage.setItem('userEmail', response.data.data.user.email);
-                localStorage.setItem('userName', response.data.data.user.name);
-                localStorage.setItem('userRole', response.data.data.user.role);
+                localStorage.setItem('userEmail', userData.email);
+                localStorage.setItem('userName', userData.name);
+                localStorage.setItem('userRole', userData.role);
                 
                 notification.success({
                     message: 'Login Successful',
-                    description: `Welcome back, ${response.data.data.user.name}!`,
+                    description: `Welcome back, ${userData.name}!`,
                 });
-                navigate('/request');
+
+                // Role-based navigation
+                if (userData.role === 'EMPLOYEE') {
+                    navigate('/request');
+                } else if (userData.role === 'FINANCE_MANAGER') {
+                    navigate('/finance');
+                } else {
+                    notification.error({
+                        message: 'Access Denied',
+                        description: 'Unknown user role',
+                    });
+                }
             }
         } catch (error) {
             console.error('Login error:', error);
@@ -105,8 +119,8 @@ const App = () => {
                                 message: 'Please input your password',
                             },
                             {
-                                min: 6,
-                                message: 'Password must be at least 6 characters',
+                                min: 3,
+                                message: 'Password must be at least 3 characters',
                             },
                             {
                                 pattern: /^\S+$/,

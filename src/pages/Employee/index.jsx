@@ -101,69 +101,73 @@ const ExpenseForm = () => {
 
     return (
         <Layout title="Expense Management System">
-        <div className={styles.container}>
-            {contextHolder}
-            <Button
-                type="primary"
-                onClick={openNotification}
-            >
-                Open the notification box
-            </Button>
-            <h2>EXPENSE MANAGEMENT SYSTEM (EMS)</h2>
-            
+            <div className={styles.container}>
+                {contextHolder}
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+                    <div>
+                        <h2>EXPENSE MANAGEMENT SYSTEM (EMS)</h2>
+                        <i>Hi, {localStorage.getItem('userName') || 'employee'}!</i>
+                    </div>
+                    <Button 
+                        type="primary"
+                        onClick={() => navigate('/history')}
+                        size="large"
+                    >
+                        View your requests
+                    </Button>
+                </div>
 
-            <i>Hi, employee!</i>
-            <form
-                onSubmit={handleSubmit}
-                className={styles.form}
-            >
-                <h3>Expense Request Form</h3>
-
-                <input
-                    type="text"
-                    name="name"
-                    placeholder="Request Name"
-                    value={formData.name}
-                    onChange={handleChange}
-                />
-
-                <select
-                    value={formData.expenseType}
-                    onChange={handleChange}
-                    name="expenseType"
+                <form
+                    onSubmit={handleSubmit}
+                    className={styles.form}
                 >
-                    <option value="">Select Expense Type</option>
-                    {expenseType.map((dept, i) => (
-                        <option
-                            key={i}
-                            value={dept}
-                        >
-                            {dept}
-                        </option>
-                    ))}
-                </select>
-                <input
-                    type="number"
-                    name="expense"
-                    placeholder="Amount"
-                    value={formData.expense}
-                    onChange={handleChange}
-                />
-                <textarea
-                    name="description"
-                    value={formData.description}
-                    placeholder="Reason for expense"
-                    onChange={handleChange}
-                ></textarea>
+                    <h3>Expense Request Form</h3>
 
-                <button
-                    type="submit"
-                    className={styles.submitButton}
-                >
-                    Send
-                </button>
-            </form>
-        </div>
+                    <input
+                        type="text"
+                        name="name"
+                        placeholder="Request Name"
+                        value={formData.name}
+                        onChange={handleChange}
+                    />
+
+                    <select
+                        value={formData.expenseType}
+                        onChange={handleChange}
+                        name="expenseType"
+                    >
+                        <option value="">Select Expense Type</option>
+                        {expenseType.map((dept, i) => (
+                            <option
+                                key={i}
+                                value={dept}
+                            >
+                                {dept}
+                            </option>
+                        ))}
+                    </select>
+                    <input
+                        type="number"
+                        name="expense"
+                        placeholder="Amount"
+                        value={formData.expense}
+                        onChange={handleChange}
+                    />
+                    <textarea
+                        name="description"
+                        value={formData.description}
+                        placeholder="Reason for expense"
+                        onChange={handleChange}
+                    ></textarea>
+
+                    <button
+                        type="submit"
+                        className={styles.submitButton}
+                    >
+                        Send
+                    </button>
+                </form>
+            </div>
         </Layout>
     );
 };
