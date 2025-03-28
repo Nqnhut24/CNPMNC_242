@@ -85,8 +85,8 @@ function Manager() {
     const handleUpdate = async (values) => {
         try {
             const token = localStorage.getItem('token');
-            const response = await axios.put(`http://localhost:8080/api/v1/requests`, {
-                ...editingRequest,
+            // Use the request ID in the URL
+            const response = await axios.put(`http://localhost:8080/api/v1/requests/${editingRequest.stt}`, {
                 name: values.name,
                 expense: Number(values.expense),
                 expenseType: values.expenseType,
