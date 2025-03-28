@@ -33,20 +33,21 @@ const App = () => {
 
             const response = await axios.post('http://localhost:8080/api/v1/auth/login', loginData);
 
-            if (response.status === 200) {
-                // Save token and user data to localStorage
-                localStorage.setItem('token', response.data.accessToken);
-                localStorage.setItem('userEmail', response.data.user.email);
-                localStorage.setItem('userName', response.data.user.name);
-                localStorage.setItem('userRole', response.data.user.role);
+            if (response.status === 200 || response.status === 201) {
+                // Updated to match the actual response structure
+                localStorage.setItem('token', response.data.data.accessToken);
+                localStorage.setItem('userEmail', response.data.data.user.email);
+                localStorage.setItem('userName', response.data.data.user.name);
+                localStorage.setItem('userRole', response.data.data.user.role);
                 
                 notification.success({
                     message: 'Login Successful',
-                    description: `Welcome back, ${response.data.user.name}!`,
+                    description: `Welcome back, ${response.data.data.user.name}!`,
                 });
                 navigate('/request');
             }
         } catch (error) {
+            console.error('Login error:', error);
             notification.error({
                 message: 'Login Failed',
                 description: error.response?.data?.message || 'Invalid credentials',
