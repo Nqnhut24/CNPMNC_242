@@ -13,7 +13,7 @@ const ExpenseForm = () => {
     const [api, contextHolder] = notification.useNotification();
     const openNotification = () => {
         api.open({
-            message: "Notification Title",
+            message: "Successfully request",
             description:
                 "This is the content of the notification. This is the content of the notification. This is the content of the notification.",
             icon: (
@@ -61,16 +61,8 @@ const ExpenseForm = () => {
     return (
         <div className={styles.container}>
             {contextHolder}
-            <Button
-                type="primary"
-                onClick={openNotification}
-            >
-                Open the notification box
-            </Button>
-            <h2>EXPENSE MANAGEMENT SYSTEM (EMS)</h2>
-            <i>Hi, employee!</i>
 
-            <h3>Expense Request Form</h3>
+            <h2>EXPENSE MANAGEMENT SYSTEM (EMS)</h2>
 
             <i>Hi, employee!</i>
             <form
@@ -110,6 +102,7 @@ const ExpenseForm = () => {
 
                 <button
                     type="submit"
+                    onClick={openNotification}
                     className={styles.submitButton}
                 >
                     Send
