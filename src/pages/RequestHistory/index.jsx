@@ -171,11 +171,19 @@ function RequestHistory() {
     const handleAccept = async (record) => {
         try {
             const token = localStorage.getItem('token');
-            await axios.put(`http://localhost:8080/api/v1/requests/${record.id}/accept`, {}, {
-                headers: {
-                    'Authorization': `Bearer ${token}`
+            await axios.put(
+                'http://localhost:8080/api/v1/requests/accept', 
+                {
+                    requestId: record.id,
+                    financeAccept: true
+                }, 
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    }
                 }
-            });
+            );
             notification.success({
                 message: 'Success',
                 description: 'Request accepted successfully'
@@ -192,11 +200,18 @@ function RequestHistory() {
     const handleReject = async (record) => {
         try {
             const token = localStorage.getItem('token');
-            await axios.put(`http://localhost:8080/api/v1/requests/${record.id}/reject`, {}, {
-                headers: {
-                    'Authorization': `Bearer ${token}`
+            await axios.put(
+                'http://localhost:8080/api/v1/requests/reject',
+                {
+                    requestId: record.id
+                },
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    }
                 }
-            });
+            );
             notification.success({
                 message: 'Success',
                 description: 'Request rejected successfully'
