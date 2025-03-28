@@ -7,8 +7,13 @@ const Layout = ({ children, title }) => {
     const navigate = useNavigate();
 
     const handleLogout = () => {
+        // Clear all auth-related data
+        localStorage.removeItem('token');
+        localStorage.removeItem('userEmail');
+        localStorage.removeItem('userName');
+        localStorage.removeItem('userRole');
         console.log("User logged out");
-        navigate("/login"); // Redirect to the login page
+        navigate("/login");
     };
 
     return (

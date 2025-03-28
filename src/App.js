@@ -1,42 +1,59 @@
-import logo from "./logo.svg";
+import { Navigate, Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import "./App.css";
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import ProtectedRoute from "./components/ProtectedRoute";
 import Employee from "./pages/Employee";
-import Manager from "./pages/Manager";
-import Finance from "./pages/Manager";
-import RequestHistory from "./pages/RequestHistory";
-import Register from "./pages/Register";
 import Login from "./pages/Login";
+import Manager from "./pages/Manager";
+import Register from "./pages/Register";
+import RequestHistory from "./pages/RequestHistory";
 
 function App() {
     return (
         <div className="App">
             <Router>
                 <Routes>
-                    <Route
-                        path="/history"
-                        element={<Manager />}
-                    />
-
+                    {/* Public Routes */}
                     <Route
                         path="/login"
                         element={<Login />}
                     />
                     <Route
-                        path="/request"
-                        element={<Employee />}
-                    />
-                    <Route
-                        path="/manager"
-                        element={<RequestHistory />}
-                    />
-                    <Route
-                        path="/finance"
-                        element={<Finance />}
-                    />
-                    <Route
                         path="/register"
                         element={<Register />}
+                    />
+
+                    {/* Employee Routes */}
+                    <Route
+                        path="/request"
+                        element={
+                            <ProtectedRoute allowedRole="EMPLOYEE">
+                                <Employee />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route
+                        path="/history"
+                        element={
+                            <ProtectedRoute allowedRole="EMPLOYEE">
+                                <Manager />
+                            </ProtectedRoute>
+                        }
+                    />
+
+                    {/* Finance Manager Routes */}
+                    <Route
+                        path="/finance"
+                        element={
+                            <ProtectedRoute allowedRole="FINANCE_MANAGER">
+                                <RequestHistory />
+                            </ProtectedRoute>
+                        }
+                    />
+
+                    {/* Redirect all unknown routes to login */}
+                    <Route
+                        path="*"
+                        element={<Navigate to="/login" />}
                     />
                 </Routes>
             </Router>
