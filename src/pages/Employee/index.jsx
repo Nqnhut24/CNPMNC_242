@@ -14,8 +14,9 @@ const ExpenseForm = () => {
     const [api, contextHolder] = notification.useNotification();
     const dispatch = useDispatch();
     
-    // Initialize form data without email since it's handled by token
+    // Initialize form data to include name
     const [formData, setFormData] = useState({
+        name: "",
         expense: "",
         expenseType: "",
         description: "",
@@ -56,6 +57,7 @@ const ExpenseForm = () => {
             });
             // Reset form after successful submission
             setFormData({
+                name: "",
                 expense: "",
                 expenseType: "",
                 description: "",
@@ -116,6 +118,14 @@ const ExpenseForm = () => {
                 className={styles.form}
             >
                 <h3>Expense Request Form</h3>
+
+                <input
+                    type="text"
+                    name="name"
+                    placeholder="Request Name"
+                    value={formData.name}
+                    onChange={handleChange}
+                />
 
                 <select
                     value={formData.expenseType}

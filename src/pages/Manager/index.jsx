@@ -3,13 +3,64 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./style.module.css";
 import Layout from "../../layout/layout";
+import axios from "axios";
 
 function Manager() {
     const navigate = useNavigate();
     const [userName, setUserName] = useState('');
+    const [requests, setRequests] = useState([]);
+    const [loading, setLoading] = useState(false);
+    // Add pagination state
+    const [pagination, setPagination] = useState({
+        current: 1,
+        pageSize: 10,
+        total: 0
+    });
+
+    const fetchRequests = async (page = 1, pageSize = 10) => {
+        try {
+            setLoading(true);
+            const token = localStorage.getItem('token');
+            // Updated URL with correct query parameter names
+            const response = await axios.get(`http://localhost:8080/api/v1/requests/employee?currentPage=${page}&pageSize=${pageSize}&sortBy=id&ascending=true`, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            if (response.data.isSuccess) {
+                const formattedData = response.data.data.map(item => ({
+                    key: item.id,
+                    stt: item.id,
+                    description: item.description,
+                    status: item.statusEnum,
+                    amount: item.expense,
+                    time: new Date(item.createdAt).toLocaleString(),
+                    expenseType: item.expenseType,
+                    tags: [item.expenseType],
+                    name: item.name || 'N/A'
+                }));
+                setRequests(formattedData);
+                
+                // Update pagination state
+                setPagination({
+                    current: response.data.currentPage,
+                    pageSize: response.data.pageSize,
+                    total: response.data.totalPage * response.data.pageSize
+                });
+            }
+        } catch (error) {
+            notification.error({
+                message: 'Error',
+                description: error.response?.data?.message || 'Failed to fetch requests'
+            });
+        } finally {
+            setLoading(false);
+        }
+    };
 
     useEffect(() => {
-        // Check auth and role
         const token = localStorage.getItem('token');
         const userRole = localStorage.getItem('userRole');
         const storedUserName = localStorage.getItem('userName');
@@ -29,6 +80,7 @@ function Manager() {
         }
 
         setUserName(storedUserName || 'Employee');
+        fetchRequests(); // Fetch requests when component mounts
     }, [navigate]);
 
     const columns = [
@@ -38,9 +90,15 @@ function Manager() {
             key: "stt",
         },
         {
+            title: "Name",
+            dataIndex: "name",
+            key: "name",
+        },
+        {
             title: "Amount",
             dataIndex: "amount",
             key: "amount",
+            render: (amount) => `${amount.toLocaleString()} VND`
         },
         {
             title: "Description",
@@ -50,19 +108,13 @@ function Manager() {
         {
             title: "Expense Type",
             key: "expenseType",
-            dataIndex: "expenseType",
-            render: (_, { tags }) => (
+            dataIndex: "tags",
+            render: (tags) => (
                 <>
                     {tags.map((tag) => {
-                        let color = tag.length > 5 ? "geekblue" : "green";
-                        if (tag === "loser") {
-                            color = "volcano";
-                        }
+                        let color = 'geekblue';
                         return (
-                            <Tag
-                                color={color}
-                                key={tag}
-                            >
+                            <Tag color={color} key={tag}>
                                 {tag.toUpperCase()}
                             </Tag>
                         );
@@ -70,11 +122,19 @@ function Manager() {
                 </>
             ),
         },
-
         {
             title: "Status",
             dataIndex: "status",
             key: "status",
+            render: (status) => (
+                <Tag color={
+                    status === 'PENDING' ? 'gold' :
+                    status === 'FINANCE_ACCEPTED' ? 'green' :
+                    status === 'FINANCE_REJECTED' ? 'red' : 'default'
+                }>
+                    {status}
+                </Tag>
+            )
         },
         {
             title: "Time",
@@ -92,27 +152,29 @@ function Manager() {
             ),
         },
     ];
-    const data = [
-        {
-            key: "1",
-            stt: 1,
-            description: "All cost for IT Department's Team building in Nha Trang",
-            status: "Pending",
-            amount: 4890000,
-            time: "23-02-2025 12:42:12",
-            tags: ["Travel"],
-        },
-    ];
+
+    // Add handler for table pagination
+    const handleTableChange = (newPagination, filters, sorter) => {
+        fetchRequests(newPagination.current, newPagination.pageSize);
+    };
 
     return (
-        <Layout title="Manager">
+        <Layout title="Request History">
             <div className={styles.container}>
                 <h1>EXPENSE MANAGEMENT SYSTEM (EMS)</h1>
-                <i>Hi {userName}, Let explore your request!</i>
-                <h3>Expense Request</h3>
+                <i>Hi {userName}, here are your requests!</i>
+                <h3>Expense Request History</h3>
                 <Table
                     columns={columns}
-                    dataSource={data}
+                    dataSource={requests}
+                    loading={loading}
+                    pagination={{
+                        ...pagination,
+                        showSizeChanger: true,
+                        showQuickJumper: true,
+                        showTotal: (total) => `Total ${total} items`
+                    }}
+                    onChange={handleTableChange}
                 />
             </div>
         </Layout>

@@ -30,7 +30,7 @@ function App() {
                     } />
                     
                     {/* Other routes */}
-                    <Route path="/finance" element={<Finance />} />
+                    <Route path="/finance" element={<RequestHistory />} />
                     <Route path="*" element={<Navigate to="/login" />} />
                 </Routes>
             </Router>
