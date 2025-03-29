@@ -161,14 +161,18 @@ function RequestHistory() {
                     <Button
                         type="primary"
                         onClick={() => handleAccept(record)}
-                        disabled={record.status !== "PENDING"}
+                        disabled={record.status === 'FINANCE_ACCEPTED' || 
+                                 record.status === 'FINANCE_REJECTED' ||
+                                 record.status === 'PENDING'}
                     >
                         Accept
                     </Button>
                     <Button
                         danger
                         onClick={() => handleReject(record)}
-                        disabled={record.status !== "PENDING"}
+                        disabled={record.status === 'FINANCE_ACCEPTED' || 
+                                 record.status === 'FINANCE_REJECTED' ||
+                                 record.status === 'PENDING'}
                     >
                         Reject
                     </Button>
