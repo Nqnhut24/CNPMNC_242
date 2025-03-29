@@ -95,8 +95,7 @@ const ExpenseForm = () => {
     const openNotification = () => {
         api.open({
             message: "Successfully request",
-            description:
-                "This is the content of the notification.",
+            description: "Wait for manager to approve your request. You can check your requests in the history page.",
             icon: (
                 <SmileOutlined
                     style={{
