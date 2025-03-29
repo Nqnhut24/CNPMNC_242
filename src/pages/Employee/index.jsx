@@ -96,7 +96,7 @@ const ExpenseForm = () => {
         api.open({
             message: "Successfully request",
             description:
-                "This is the content of the notification. This is the content of the notification. This is the content of the notification.",
+                "This is the content of the notification.",
             icon: (
                 <SmileOutlined
                     style={{
