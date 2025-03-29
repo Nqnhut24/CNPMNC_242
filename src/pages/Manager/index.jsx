@@ -124,27 +124,24 @@ function Manager() {
     const handleDelete = async (record) => {
         try {
             const token = localStorage.getItem("token");
-            const response = await axios.delete(
-                `http://localhost:8080/api/v1/requests/${record.stt}`,
-                {
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": `Bearer ${token}`
-                    }
-                }
-            );
+            const response = await axios.delete(`http://localhost:8080/api/v1/requests/${record.stt}`, {
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+            });
 
             if (response.data.isSuccess) {
                 notification.success({
                     message: "Success",
-                    description: "Request deleted successfully!"
+                    description: "Request deleted successfully!",
                 });
                 fetchRequests(pagination.current, pagination.pageSize);
             }
         } catch (error) {
             notification.error({
                 message: "Error",
-                description: error.response?.data?.message || "Failed to delete request"
+                description: error.response?.data?.message || "Failed to delete request",
             });
         }
     };
@@ -328,7 +325,7 @@ function Manager() {
                 <div
                     style={{
                         display: "flex",
-                        justifyContent: "space-between",
+                        justifyContent: "center",
                         alignItems: "center",
                         marginBottom: "20px",
                     }}
@@ -337,12 +334,14 @@ function Manager() {
                         <h1>EXPENSE MANAGEMENT SYSTEM (EMS)</h1>
                         <i>Hi {userName}, here are your requests!</i>
                     </div>
+                </div>
+                <div style={{ display: "flex", justifyContent: "end", alignItems: "center" }}>
                     <Button
                         type="primary"
                         onClick={() => navigate("/request")}
                         size="large"
                     >
-                        Send your request
+                        New request
                     </Button>
                 </div>
                 <h3>Expense Request History</h3>

@@ -9,7 +9,7 @@ const API = axios.create({
 
 API.interceptors.request.use(
     (config) => {
-        const token = localStorage.getItem('token');
+        const token = localStorage.getItem("token");
         if (token) {
             config.headers.Authorization = `Bearer ${token}`;
         }
@@ -17,8 +17,25 @@ API.interceptors.request.use(
     },
     (error) => {
         return Promise.reject(error);
-    }
+    },
 );
+
+export const getBudget = async () => {
+    try {
+        const response = await API.get("/api/v1/budgets");
+        return response.data;
+    } catch (err) {
+        throw err.response?.data || err;
+    }
+};
+export const setBudget = async (params) => {
+    try {
+        const response = await API.post("/api/v1/payments",params);
+        return response.data;
+    } catch (err) {
+        throw err.response?.data || err;
+    }
+};
 
 export const sendRequest = async (params) => {
     try {

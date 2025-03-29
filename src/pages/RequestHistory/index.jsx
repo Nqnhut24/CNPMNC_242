@@ -4,6 +4,8 @@ import { Button, Modal, Space, Table, Tag, notification } from "antd";
 import Layout from "../../layout/layout";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { setBudget } from "../../api";
 
 function RequestHistory() {
     const navigate = useNavigate();
@@ -14,7 +16,12 @@ function RequestHistory() {
         pageSize: 10,
         total: 0,
     });
-    const [isModalOpen, setIsModalOpen] = useState(false);
+    const dispatch = useDispatch();
+
+    const [isAcceptModalOpen, setIsAcceptModalOpen] = useState(false);
+    const [approvalAmount, setApprovalAmount] = useState();
+    const [selectedRequest, setSelectedRequest] = useState(null);
+    const [approvalError, setApprovalError] = useState("");
 
     const fetchRequests = async (page = 1, pageSize = 10) => {
         try {
@@ -160,19 +167,22 @@ function RequestHistory() {
                 <Space size="middle">
                     <Button
                         type="primary"
-                        onClick={() => handleAccept(record)}
-                        disabled={record.status === 'FINANCE_ACCEPTED' || 
-                                 record.status === 'FINANCE_REJECTED' ||
-                                 record.status === 'PENDING'}
+                        onClick={() => {
+                            setSelectedRequest(record);
+                            setIsAcceptModalOpen(true);
+                        }}
+                        disabled={record.status === "FINANCE_ACCEPTED" || record.status === "FINANCE_REJECTED"}
                     >
                         Accept
                     </Button>
                     <Button
                         danger
                         onClick={() => handleReject(record)}
-                        disabled={record.status === 'FINANCE_ACCEPTED' || 
-                                 record.status === 'FINANCE_REJECTED' ||
-                                 record.status === 'PENDING'}
+                        disabled={
+                            record.status === "FINANCE_ACCEPTED" ||
+                            record.status === "FINANCE_REJECTED" ||
+                            record.status === "PENDING"
+                        }
                     >
                         Reject
                     </Button>
@@ -201,6 +211,7 @@ function RequestHistory() {
                 message: "Success",
                 description: "Request accepted successfully",
             });
+            // Dispatch the budget action
             fetchRequests(pagination.current, pagination.pageSize);
         } catch (error) {
             notification.error({
@@ -257,6 +268,73 @@ function RequestHistory() {
                     onChange={handleTableChange}
                 />
             </div>
+            {/* Modal for approving request */}
+            <Modal
+                title="Approve Request"
+                open={isAcceptModalOpen}
+                onOk={async () => {
+                    if (approvalAmount <= 0) {
+                        setApprovalError("Approval amount must be greater than 0");
+                        return;
+                    }
+
+                    try {
+                        const token = localStorage.getItem("token");
+                        await axios.put(
+                            "http://localhost:8080/api/v1/requests/accept",
+                            {
+                                requestId: selectedRequest.id,
+                                financeAccept: true,
+                                approvedAmount: approvalAmount,
+                            },
+                            {
+                                headers: {
+                                    "Content-Type": "application/json",
+                                    Authorization: `Bearer ${token}`,
+                                },
+                            },
+                        );
+                        dispatch(setBudget({ amount: approvalAmount, expenseId: selectedRequest.id }));
+                        notification.success({
+                            message: "Success",
+                            description: "Request approved successfully",
+                        });
+
+                        fetchRequests(pagination.current, pagination.pageSize);
+                    } catch (error) {
+                        console.log(error)
+                    } finally {
+                        setIsAcceptModalOpen(false);
+                        setApprovalAmount(0);
+                        setApprovalError(""); // Xóa lỗi khi đóng modal
+                    }
+                }}
+                onCancel={() => {
+                    setIsAcceptModalOpen(false);
+                    setApprovalAmount(0);
+                    setApprovalError(""); // Xóa lỗi khi đóng modal
+                }}
+            >
+                <p>Enter the approval amount:</p>
+                <input
+                    type="number"
+                    value={approvalAmount}
+                    onChange={(e) => {
+                        const value = Number(e.target.value);
+                        setApprovalAmount(value);
+
+                        // Kiểm tra nếu giá trị âm
+                        if (value <= 0) {
+                            setApprovalError("Approval amount must be greater than 0");
+                        } else {
+                            setApprovalError(""); // Xóa lỗi nếu giá trị hợp lệ
+                        }
+                    }}
+                    style={{ width: "100%", padding: "8px", marginBottom: "8px" }}
+                    placeholder="Approval Amount"
+                />
+                {approvalError && <p style={{ color: "red", fontSize: "12px" }}>{approvalError}</p>}
+            </Modal>
         </Layout>
     );
 }

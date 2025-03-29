@@ -7,11 +7,25 @@ import Layout from "../../layout/layout";
 import { sendRequest } from "../../store/slices/expenseSlice";
 import styles from "./style.module.css";
 import "./Employee.css";
+import { getBudget } from "../../api";
 const ExpenseForm = () => {
     const navigate = useNavigate();
     const expenseType = ["Office Rent", "Salary", "Office Supplies", "Marketing", "Meeting"];
     const [api, contextHolder] = notification.useNotification();
     const dispatch = useDispatch();
+    const [budget, setBudget] = useState(0);
+
+    useEffect(() => {
+        const callBudget = async () => {
+            const data = await getBudget();
+            setBudget(data?.data.amount);
+        };
+        callBudget();
+    }, []);
+
+    useEffect(() => {
+        console.log("BUDGET: ", budget);
+    }, [budget]);
 
     // Initialize form data to include name
     const [formData, setFormData] = useState({
@@ -142,6 +156,9 @@ const ExpenseForm = () => {
                 >
                     View your requests
                 </Button>
+                <p>
+                    Current Budget: <span style={{ color: "red" }}>{budget}</span>
+                </p>
                 <div
                     style={{
                         display: "flex",
