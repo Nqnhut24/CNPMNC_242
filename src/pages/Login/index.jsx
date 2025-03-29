@@ -69,7 +69,7 @@ const App = () => {
             console.error("Login error:", error);
             notification.error({
                 message: "Login Failed",
-                description: error.response?.data?.message || "Invalid credentials",
+                description: /*error.response?.data?.message ||*/ "Invalid credentials",
             });
         }
     };
