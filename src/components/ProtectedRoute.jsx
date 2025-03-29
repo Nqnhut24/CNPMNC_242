@@ -26,6 +26,7 @@ const ProtectedRoute = ({ children, allowedRole }) => {
         } else if (userRole === "FINANCE_MANAGER") {
             return <Navigate to="/finance" />;
         } else if (userRole === "MANAGER") {
+            alert("PROTECTED ROUTE MANAGER");
             return <Navigate to="/manager" />;
         } else {
             return <Navigate to="/login" />;

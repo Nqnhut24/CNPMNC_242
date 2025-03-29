@@ -5,6 +5,7 @@ import Employee from "./pages/Employee";
 import Login from "./pages/Login";
 import Manager from "./pages/Manager";
 import Register from "./pages/Register";
+import Finance from "./pages/Finance";
 import RequestHistory from "./pages/RequestHistory";
 
 function App() {
@@ -53,7 +54,7 @@ function App() {
                         path="/manager"
                         element={
                             <ProtectedRoute allowedRole="MANAGER">
-                                <RequestHistory />
+                                <Finance />
                             </ProtectedRoute>
                         }
                     />

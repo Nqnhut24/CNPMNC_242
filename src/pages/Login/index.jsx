@@ -56,7 +56,7 @@ const App = () => {
                 } else if (userData.role === "FINANCE_MANAGER") {
                     navigate("/finance");
                 } else if (userData.role === "MANAGER") {
-                    alert("Welcome Manager!");
+                    // alert("Welcome Manager!");
                     navigate("/manager");
                 } else {
                     notification.error({
