@@ -1,7 +1,8 @@
 import React, { useState } from "react";
-import { Button, Modal, Space, Table, Tag } from "antd";
+import { Button, Modal, notification, Space, Table, Tag } from "antd";
 import Layout from "../../layout/layout";
 import styles from "./style.module.css";
+import axios from "axios";
 
 function Finance() {
     const columns = [
