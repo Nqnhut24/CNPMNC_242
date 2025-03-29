@@ -75,6 +75,7 @@ const ExpenseForm = () => {
                 message: "Success",
                 description: "Request submitted successfully!",
             });
+            openNotification();
             // Reset form after successful submission
             setFormData({
                 name: "",
