@@ -1,0 +1,7 @@
+.ant-btn-variant-solid {
+    background-color: #2ecc71;
+}
+
+.ant-btn-variant-solid:not(:disabled):not(.ant-btn-disabled):hover {
+    background-color: #20a558;
+}
