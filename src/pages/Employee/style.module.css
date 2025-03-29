@@ -105,3 +105,13 @@ textarea {
     padding: 20px;
   }
 }
+
+.title {
+  text-align: center;
+}
+
+.error {
+  color: red;
+  font-size: 12px;
+  margin-top: 4px;
+}

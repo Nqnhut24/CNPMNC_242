@@ -22,6 +22,8 @@ const ExpenseForm = () => {
         statusEnum: "PENDING",
     });
 
+    const [formErrors, setFormErrors] = useState({});
+
     useEffect(() => {
         // Check if user is logged in
         const token = localStorage.getItem("token");
@@ -35,13 +37,30 @@ const ExpenseForm = () => {
         e.preventDefault();
         const userEmail = localStorage.getItem("userEmail");
 
-        if (!formData.expenseType || !formData.expense || !formData.description) {
-            notification.error({
-                message: "Validation Error",
-                description: "Please fill in all fields!",
-            });
+        // Validation logic
+        const errors = {};
+        if (!formData.name.trim()) {
+            errors.name = "Request Name is required";
+        }
+        if (!formData.expenseType) {
+            errors.expenseType = "Please select an expense type";
+        }
+        if (!formData.expense || isNaN(formData.expense) || Number(formData.expense) <= 0) {
+            errors.expense = "Expense amount must be a positive number";
+        }
+
+        // If there are errors, set formErrors and focus on the first error field
+        if (Object.keys(errors).length > 0) {
+            setFormErrors(errors);
+
+            // Focus on the first error field
+            const firstErrorField = Object.keys(errors)[0];
+            document.getElementsByName(firstErrorField)[0]?.focus();
+
             return;
         }
+
+        setFormErrors({}); // Clear errors if validation passes
 
         try {
             await dispatch(
@@ -88,7 +107,19 @@ const ExpenseForm = () => {
     };
 
     const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
+        const { name, value } = e.target;
+
+        // Cập nhật giá trị form
+        setFormData({ ...formData, [name]: value });
+
+        // Xóa lỗi của trường hiện tại nếu có
+        if (formErrors[name]) {
+            setFormErrors((prevErrors) => {
+                const updatedErrors = { ...prevErrors };
+                delete updatedErrors[name];
+                return updatedErrors;
+            });
+        }
     };
 
     const handleLogout = () => {
@@ -119,7 +150,7 @@ const ExpenseForm = () => {
                         marginBottom: "20px",
                     }}
                 >
-                    <div>
+                    <div className={styles.title}>
                         <h2>EXPENSE MANAGEMENT SYSTEM (EMS)</h2>
                         <i>Hi, {localStorage.getItem("userName") || "employee"}!</i>
                     </div>
@@ -138,6 +169,7 @@ const ExpenseForm = () => {
                         value={formData.name}
                         onChange={handleChange}
                     />
+                    {formErrors.name && <p className={styles.error}>{formErrors.name}</p>}
 
                     <select
                         value={formData.expenseType}
@@ -154,6 +186,8 @@ const ExpenseForm = () => {
                             </option>
                         ))}
                     </select>
+                    {formErrors.expenseType && <p className={styles.error}>{formErrors.expenseType}</p>}
+
                     <input
                         type="number"
                         name="expense"
@@ -161,12 +195,15 @@ const ExpenseForm = () => {
                         value={formData.expense}
                         onChange={handleChange}
                     />
+                    {formErrors.expense && <p className={styles.error}>{formErrors.expense}</p>}
+
                     <textarea
                         name="description"
                         value={formData.description}
                         placeholder="Reason for expense"
                         onChange={handleChange}
                     ></textarea>
+                    {formErrors.description && <p className={styles.error}>{formErrors.description}</p>}
 
                     <button
                         type="submit"
