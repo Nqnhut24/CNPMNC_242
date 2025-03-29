@@ -104,6 +104,13 @@ const ExpenseForm = () => {
         <Layout title="Expense Management System">
             <div className={styles.container}>
                 {contextHolder}
+                <Button
+                    type="primary"
+                    onClick={() => navigate("/history")}
+                    size="large"
+                >
+                    View your requests
+                </Button>
                 <div
                     style={{
                         display: "flex",
@@ -116,13 +123,6 @@ const ExpenseForm = () => {
                         <h2>EXPENSE MANAGEMENT SYSTEM (EMS)</h2>
                         <i>Hi, {localStorage.getItem("userName") || "employee"}!</i>
                     </div>
-                    <Button
-                        type="primary"
-                        onClick={() => navigate("/history")}
-                        size="large"
-                    >
-                        View your requests
-                    </Button>
                 </div>
 
                 <form

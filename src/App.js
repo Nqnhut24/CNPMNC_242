@@ -49,6 +49,14 @@ function App() {
                             </ProtectedRoute>
                         }
                     />
+                    <Route
+                        path="/manager"
+                        element={
+                            <ProtectedRoute allowedRole="MANAGER">
+                                <RequestHistory />
+                            </ProtectedRoute>
+                        }
+                    />
 
                     {/* Redirect all unknown routes to login */}
                     <Route

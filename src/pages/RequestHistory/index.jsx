@@ -12,47 +12,47 @@ function RequestHistory() {
     const [pagination, setPagination] = useState({
         current: 1,
         pageSize: 10,
-        total: 0
+        total: 0,
     });
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const fetchRequests = async (page = 1, pageSize = 10) => {
         try {
             setLoading(true);
-            const token = localStorage.getItem('token');
+            const token = localStorage.getItem("token");
             const response = await axios.get(
                 `http://localhost:8080/api/v1/requests?currentPage=${page}&pageSize=${pageSize}&sortBy=id&ascending=true`,
                 {
                     headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    }
-                }
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`,
+                    },
+                },
             );
 
             if (response.data.isSuccess) {
-                const formattedData = response.data.data.map(item => ({
+                const formattedData = response.data.data.map((item) => ({
                     key: item.id,
                     id: item.id,
-                    name: item.name || 'N/A',
+                    name: item.name || "N/A",
                     amount: item.expense,
                     reason: item.description,
                     status: item.statusEnum,
                     time: new Date(item.createdAt).toLocaleString(),
                     tags: [item.expenseType],
-                    createdBy: item.createdBy
+                    createdBy: item.createdBy,
                 }));
                 setRequests(formattedData);
                 setPagination({
                     current: response.data.currentPage,
                     pageSize: response.data.pageSize,
-                    total: response.data.totalPage * response.data.pageSize
+                    total: response.data.totalPage * response.data.pageSize,
                 });
             }
         } catch (error) {
             notification.error({
-                message: 'Error',
-                description: error.response?.data?.message || 'Failed to fetch requests'
+                message: "Error",
+                description: error.response?.data?.message || "Failed to fetch requests",
             });
         } finally {
             setLoading(false);
@@ -60,20 +60,20 @@ function RequestHistory() {
     };
 
     useEffect(() => {
-        const token = localStorage.getItem('token');
-        const userRole = localStorage.getItem('userRole');
+        const token = localStorage.getItem("token");
+        const userRole = localStorage.getItem("userRole");
 
         if (!token) {
-            navigate('/login');
+            navigate("/login");
             return;
         }
 
-        if (userRole !== 'FINANCE_MANAGER') {
+        if (userRole !== "FINANCE_MANAGER") {
             notification.error({
-                message: 'Access Denied',
-                description: 'Only finance managers can access this page'
+                message: "Access Denied",
+                description: "Only finance managers can access this page",
             });
-            navigate('/login');
+            navigate("/login");
             return;
         }
 
@@ -99,7 +99,7 @@ function RequestHistory() {
             title: "Amount",
             dataIndex: "amount",
             key: "amount",
-            render: (amount) => `${amount.toLocaleString()} VND`
+            render: (amount) => `${amount.toLocaleString()} VND`,
         },
         {
             title: "Reason",
@@ -113,7 +113,10 @@ function RequestHistory() {
             render: (tags) => (
                 <>
                     {tags.map((tag) => (
-                        <Tag color="blue" key={tag}>
+                        <Tag
+                            color="blue"
+                            key={tag}
+                        >
                             {tag.toUpperCase()}
                         </Tag>
                     ))}
@@ -130,14 +133,20 @@ function RequestHistory() {
             dataIndex: "status",
             key: "status",
             render: (status) => (
-                <Tag color={
-                    status === 'PENDING' ? 'gold' :
-                    status === 'FINANCE_ACCEPTED' ? 'green' :
-                    status === 'FINANCE_REJECTED' ? 'red' : 'default'
-                }>
+                <Tag
+                    color={
+                        status === "PENDING"
+                            ? "gold"
+                            : status === "FINANCE_ACCEPTED"
+                            ? "green"
+                            : status === "FINANCE_REJECTED"
+                            ? "red"
+                            : "default"
+                    }
+                >
                     {status}
                 </Tag>
-            )
+            ),
         },
         {
             title: "Time",
@@ -149,17 +158,17 @@ function RequestHistory() {
             key: "action",
             render: (_, record) => (
                 <Space size="middle">
-                    <Button 
+                    <Button
                         type="primary"
                         onClick={() => handleAccept(record)}
-                        disabled={record.status !== 'PENDING'}
+                        disabled={record.status !== "PENDING"}
                     >
                         Accept
                     </Button>
-                    <Button 
+                    <Button
                         danger
                         onClick={() => handleReject(record)}
-                        disabled={record.status !== 'PENDING'}
+                        disabled={record.status !== "PENDING"}
                     >
                         Reject
                     </Button>
@@ -170,57 +179,57 @@ function RequestHistory() {
 
     const handleAccept = async (record) => {
         try {
-            const token = localStorage.getItem('token');
+            const token = localStorage.getItem("token");
             await axios.put(
-                'http://localhost:8080/api/v1/requests/accept', 
+                "http://localhost:8080/api/v1/requests/accept",
                 {
                     requestId: record.id,
-                    financeAccept: true
-                }, 
+                    financeAccept: true,
+                },
                 {
                     headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    }
-                }
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`,
+                    },
+                },
             );
             notification.success({
-                message: 'Success',
-                description: 'Request accepted successfully'
+                message: "Success",
+                description: "Request accepted successfully",
             });
             fetchRequests(pagination.current, pagination.pageSize);
         } catch (error) {
             notification.error({
-                message: 'Error',
-                description: error.response?.data?.message || 'Failed to accept request'
+                message: "Error",
+                description: error.response?.data?.message || "Failed to accept request",
             });
         }
     };
 
     const handleReject = async (record) => {
         try {
-            const token = localStorage.getItem('token');
+            const token = localStorage.getItem("token");
             await axios.put(
-                'http://localhost:8080/api/v1/requests/reject',
+                "http://localhost:8080/api/v1/requests/reject",
                 {
-                    requestId: record.id
+                    requestId: record.id,
                 },
                 {
                     headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    }
-                }
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`,
+                    },
+                },
             );
             notification.success({
-                message: 'Success',
-                description: 'Request rejected successfully'
+                message: "Success",
+                description: "Request rejected successfully",
             });
             fetchRequests(pagination.current, pagination.pageSize);
         } catch (error) {
             notification.error({
-                message: 'Error',
-                description: error.response?.data?.message || 'Failed to reject request'
+                message: "Error",
+                description: error.response?.data?.message || "Failed to reject request",
             });
         }
     };
@@ -239,7 +248,7 @@ function RequestHistory() {
                         ...pagination,
                         showSizeChanger: true,
                         showQuickJumper: true,
-                        showTotal: (total) => `Total ${total} items`
+                        showTotal: (total) => `Total ${total} items`,
                     }}
                     onChange={handleTableChange}
                 />
