@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import Layout from "../../layout/layout";
 import { sendRequest } from "../../store/slices/expenseSlice";
 import styles from "./style.module.css";
-
+import "./Employee.css";
 const ExpenseForm = () => {
     const navigate = useNavigate();
     const expenseType = ["Office Rent", "Salary", "Office Supplies", "Marketing", "Meeting"];
@@ -145,14 +145,17 @@ const ExpenseForm = () => {
                 <div
                     style={{
                         display: "flex",
-                        justifyContent: "space-between",
+                        justifyContent: "center",
                         alignItems: "center",
                         marginBottom: "20px",
                     }}
                 >
                     <div className={styles.title}>
                         <h2>EXPENSE MANAGEMENT SYSTEM (EMS)</h2>
-                        <i>Hi, {localStorage.getItem("userName") || "employee"}!</i>
+                        <i>
+                            Hi, {localStorage.getItem("userName") || "employee"}, Let create an expense request for your
+                            job!
+                        </i>
                     </div>
                 </div>
 
