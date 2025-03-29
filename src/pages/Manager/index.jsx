@@ -121,6 +121,34 @@ function Manager() {
         }
     };
 
+    const handleDelete = async (record) => {
+        try {
+            const token = localStorage.getItem("token");
+            const response = await axios.delete(
+                `http://localhost:8080/api/v1/requests/${record.stt}`,
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${token}`
+                    }
+                }
+            );
+
+            if (response.data.isSuccess) {
+                notification.success({
+                    message: "Success",
+                    description: "Request deleted successfully!"
+                });
+                fetchRequests(pagination.current, pagination.pageSize);
+            }
+        } catch (error) {
+            notification.error({
+                message: "Error",
+                description: error.response?.data?.message || "Failed to delete request"
+            });
+        }
+    };
+
     const UpdateModal = () => {
         const [form, setForm] = useState({
             name: editingRequest?.name || "",
@@ -270,7 +298,7 @@ function Manager() {
         {
             title: "Action",
             key: "action",
-            render: (row, record) => (
+            render: (_, record) => (
                 <Space size="middle">
                     <Button
                         type="primary"
@@ -283,8 +311,9 @@ function Manager() {
                         Update
                     </Button>
                     <Button
-                        disabled={record.status !== "PENDING"}
                         danger
+                        onClick={() => handleDelete(record)}
+                        disabled={record.status !== "PENDING"}
                     >
                         Delete
                     </Button>
